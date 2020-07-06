@@ -1,5 +1,3 @@
-# Controlhealth
-
 <h1 align="center">
   <img src="./controlhealth-logo.png">
 </h1>
