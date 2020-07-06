@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="../_template.xhtml">
+	<ui:define name="titulo">
+		<p:outputLabel value="#{msg['user-title']}" />
+	</ui:define>
+	<ui:define name="conteudo">
+		<h:form id="frmUser">
+			<p:growl id="messages" showDetail="true" autoUpdate="true" />
+			<p:fieldset legend="#{msg['register-title-data-user']}">
+				<h:panelGroup>
+					<p:panelGrid columns="2">
+						<p:outputLabel 
+							value="#{msg['register-user-nickname']}" 
+							for="nickname" />
+						<p:inputText 
+							id="nickname" 
+							value="#{adminBean.user.nickName}"
+							required="true"
+							requiredMessage="#{msg['register-user-nickname-required']}"
+							validatorMessage="#{msg['register-user-nickname-msg-validator']}">
+							<f:validateLength maximum="10" />
+						</p:inputText>
+						<p:outputLabel 
+							value="#{msg['register-user-email']}" 
+							for="email" />
+						<p:inputText 
+							id="email" 
+							value="#{adminBean.user.email}"
+							required="true"
+							requiredMessage="#{msg['register-user-email-required']}"
+							validatorMessage="#{msg['register-user-email-msg-validator']}">
+							<f:validateLength maximum="30" />
+							<f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+							<p:message for="email"/>
+						</p:inputText>
+						
+						<p:outputLabel 
+							value="#{msg['register-user-password']}"
+							for="password1" />
+						<p:password 
+							id="password1" 
+							value="#{adminBean.user.password}"
+							required="true"
+							requiredMessage="#{msg['register-user-password-required']}"
+							feedback="true"
+							promptLabel="#{msg['senha-input']}" 
+							weakLabel="#{msg['senha-weak-label']}" 
+							goodLabel="#{msg['senha-good-label']}" 
+							strongLabel="#{msg['senha-strong-label']}"
+							validatorMessage="#{msg['register-user-password-msg-valid-pass-again']}"
+							match="password2">
+							<f:validateLength maximum="10" />
+						</p:password>
+						<p:outputLabel 
+							value="#{msg['register-user-password-confirm']}"
+							for="password2" />
+						<p:password 
+							id="password2" 
+							value="#{adminBean.user.password}"
+							required="true"
+							requiredMessage="#{msg['register-user-password-confirm-required']}"
+							promptLabel="#{msg['senha-confirm']}">
+							<f:validateLength maximum="10" />
+						</p:password>
+						
+						<p:outputLabel 
+							value="#{msg['register-user-isAdmin']}"
+							for="isAdmin" />
+						<p:selectOneRadio 
+							id="isAdmin" 
+							value="#{adminBean.user.isAdmin}">
+							<f:selectItem 
+								itemLabel="#{msg['register-user-isAdmin-yes']}" 
+								itemValue="true" />
+							<f:selectItem 
+								itemLabel="#{msg['register-user-isAdmin-no']}" 
+								itemValue="false" />
+						</p:selectOneRadio>
+						<p:commandButton 
+							value="#{msg['register-button-save']}"
+							action="#{adminBean.addOrUpdate}" 
+							ajax="true" />
+						<p:commandButton 
+							value="#{msg['register-button-back']}"
+							action="#{adminBean.listUsers}" 
+							immediate="true" />
+					</p:panelGrid>
+				</h:panelGroup>
+			</p:fieldset>
+		</h:form>
+	</ui:define>
+	<ui:define name="rodape">
+	</ui:define>
+</ui:composition>
+</html>

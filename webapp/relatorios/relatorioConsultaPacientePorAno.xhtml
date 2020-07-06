@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="../_template.xhtml">
+	<ui:define name="titulo">
+		<p:outputLabel
+			value="#{msg['relatorio-consulta-paciente-por-ano-titulo']}" />
+	</ui:define>
+	<ui:define name="conteudo">
+		<h:form id="formRelatorioPaciente">
+			<p:growl id="messages" showDetail="true" autoUpdate="true" />
+			<p:ajaxStatus style="display:block; margin-bottom:2em; height:100%;" />
+			<p:ajaxStatus onstart="PF('loadDialog').show()" onsuccess="PF('loadDialog').hide()"/>
+			<p:dialog 
+				widgetVar="loadDialog" 
+				modal="true"
+				draggable="false"
+				closable="false"
+				resizable="false"
+				showHeader="false">
+					<p:graphicImage 
+						library="gif"
+						name="loading2.gif"
+						title="loading" style="vertical-align: middle; width: 300px; height: 150px" />
+			</p:dialog>
+			<p:panel id="relatorio" style="margin-bottom:20px">
+				<p:panelGrid columns="3" styleClass="ui-noborder">
+					<p:outputLabel value="#{msg['cadastro-paciente']}" for="paciente" />
+					<p:selectOneMenu
+						value="#{relatorioConsultaPacienteBean.paciente.id}" id="paciente"
+						required="true"
+						requiredMessage="#{msg['cadastro-msg-req-paciente']}">
+						<f:selectItem itemValue="#{null}"
+							itemLabel="#{msg['cadastro-msg-label-paciente']}"
+							noSelectionOption="true" />
+						<f:selectItems
+							value="#{relatorioConsultaPacienteBean.listaPacientes}"
+							var="paciente" itemLabel="#{paciente.nome}"
+							itemValue="#{paciente.id}" />
+					</p:selectOneMenu>
+					<p:commandButton value="Consultar"
+						action="#{relatorioConsultaPacienteBean.createBarModel}"
+						update="@all"/>
+				</p:panelGrid>
+				<p:chart id="barModel" type="bar" model="#{relatorioConsultaPacienteBean.barModel}"
+						style="height:300px" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+	<ui:define name="rodape">
+	</ui:define>
+</ui:composition>
+</html>

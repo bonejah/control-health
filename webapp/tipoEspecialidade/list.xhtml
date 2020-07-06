@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="../_template.xhtml">
+	<ui:define name="titulo">
+		<p:outputPanel value="#{msg['lista-tipo-especialidade-titulo']}"/>
+	</ui:define>
+	<ui:define name="conteudo">
+		<p:growl id="messages" showDetail="true" autoUpdate="true" />
+		<p:ajaxStatus style="display:block; margin-bottom:2em; height:100%;" />
+		<p:ajaxStatus onstart="PF('loadDialog').show()" onsuccess="PF('loadDialog').hide()"/>
+		<p:dialog 
+			widgetVar="loadDialog" 
+			modal="true"
+			draggable="false"
+			closable="false"
+			resizable="false"
+			showHeader="false">
+				<p:graphicImage 
+					library="gif"
+					name="loading2.gif"
+					title="loading" style="vertical-align: middle; width: 300px; height: 150px" />
+		</p:dialog>
+		<p:fieldset legend="#{msg['lista-tipo-especialidade-titulo']}">
+			<h:form id="frmNovoTipoEspecialidade">
+				<p:commandButton 
+					value="#{msg['lista-tipo-especialidade-botao-novo-tipo-endereco']}"
+					action="#{tipoEspecialidadeBean.newTipoEspecialidade}"
+					icon="ui-icon-disk" 
+					style="margin-bottom: 20px;" />
+			</h:form>
+			<h:form 
+				id="formTabelaTipoEspecialidade" 
+				style="text-align:center">
+				<p:dataTable 
+					id="tabelaTipoEspecialidades"
+					var="tipoEspecialidade" 
+					rows="10" 
+					paginator="true"
+					filterDelay="1000"
+					value="#{tipoEspecialidadeBean.model}"
+					lazy="true"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					emptyMessage="#{msg['lista-tipo-especialidade-nenhum-registro']}">
+					<p:column 
+						headerText="#{msg['lista-tipo-especialidade-id']}"
+						sortBy="#{tipoEspecialidade.id}"
+						filterBy="#{tipoEspecialidade.id}"
+						filterMatchMode="exact">
+						<h:outputText value="#{tipoEspecialidade.id}" />
+					</p:column>
+					<p:column
+						headerText="#{msg['lista-tipo-especialidade-descricao']}"
+						sortBy="#{tipoEspecialidade.descricao}"
+						filterBy="#{tipoEspecialidade.descricao}"
+						filterMatchMode="contains">
+						<h:outputText value="#{tipoEspecialidade.descricao}" />
+					</p:column>
+					<p:column headerText="#{msg['lista-tipo-especialidade-acoes']}">
+						<p:commandButton 
+							icon="fa fa-fw fa-eye"
+							action="#{tipoEspecialidadeBean.viewTipoEspecialidade(tipoEspecialidade)}"
+							oncomplete="PF('dlg').show()" 
+							update=":formDlg" 
+							title="#{msg['lista-tipo-especialidade-botao-visualizar-endereco']}" />
+						<p:commandButton
+							action="#{tipoEspecialidadeBean.editTipoEspecialidade(tipoEspecialidade)}"
+							icon="fa fa-fw fa-edit"
+							update=":formTabelaTipoEspecialidade:tabelaTipoEspecialidades"
+							process="@form" 
+							title="#{msg['lista-tipo-especialidade-botao-editar-endereco']}" />
+						<p:commandButton
+							action="#{tipoEspecialidadeBean.deleteTipoEspecialidade(tipoEspecialidade)}"
+							icon="fa fa-fw fa-remove"
+							update=":formTabelaTipoEspecialidade:tabelaTipoEspecialidades"
+							process="@form" 
+							title="#{msg['lista-tipo-especialidade-botao-excluir-endereco']}">
+							<p:confirm 
+								header="#{msg['lista-tipo-especialidade-msg-id']} #{tipoEspecialidade.id}" 
+								message="#{msg['lista-tipo-especialidade-msg-conf-exclusao']}" 
+								icon="pi pi-exclamation-triangle" />
+						</p:commandButton>
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" closeOnEscape="true">
+					        <p:commandButton 
+					        	value="#{msg['modal-btn-excluir-consulta-sim']}" 
+					        	type="button" 
+					        	styleClass="ui-confirmdialog-yes" 
+					        	icon="pi pi-check" />	
+					        <p:commandButton 
+					        	value="#{msg['modal-btn-excluir-consulta-nao']}" 
+					        	type="button" 
+					        	styleClass="ui-confirmdialog-no" 
+					        	icon="pi pi-times" />
+					    </p:confirmDialog>	
+					</p:column>
+				</p:dataTable>
+			</h:form>
+			<h:form id="formDlg">
+				<p:dialog 
+					modal="true" 
+					resizable="false" 
+					dynamic="true"
+					draggable="true" 
+					header="#{msg['modal-tipo-especialidade-titulo']}" 
+					widgetVar="dlg"
+					closeOnEscape="true">
+					<h:panelGroup>
+						<p:panelGrid columns="2">
+							<p:outputLabel 
+								value="#{msg['modal-tipo-especialidade-id']}" 
+								for="id" />
+							<h:outputText 
+								id="id" 
+								value="#{tipoEspecialidadeBean.tipoEspecialidade.id}" />
+							<p:outputLabel 
+								value="#{msg['modal-tipo-especialidade-descricao']}" 
+								for="descricao" />
+							<h:outputText 
+								id="descricao" 
+								value="#{tipoEspecialidadeBean.tipoEspecialidade.descricao}" />
+						</p:panelGrid>
+					</h:panelGroup>
+				</p:dialog>
+			</h:form>
+		</p:fieldset>
+	</ui:define>
+	<ui:define name="rodape">
+	</ui:define>
+</ui:composition>
+</html>

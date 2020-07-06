@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="../_template.xhtml">
+	<ui:define name="titulo">
+		<p:outputLabel value="#{msg['cadastro-paciente-titulo']}"/>
+	</ui:define>
+	<ui:define name="conteudo">
+		<p:growl id="messages" showDetail="true" autoUpdate="true" />
+		<p:ajaxStatus style="display:block; margin-bottom:2em; height:100%;" />
+		<p:ajaxStatus onstart="PF('loadDialog').show()" onsuccess="PF('loadDialog').hide()"/>
+		<p:dialog 
+			widgetVar="loadDialog" 
+			modal="true"
+			draggable="false"
+			closable="false"
+			resizable="false"
+			showHeader="false">
+				<p:graphicImage 
+					library="gif"
+					name="loading2.gif"
+					title="loading" style="vertical-align: middle; width: 300px; height: 150px" />
+		</p:dialog>
+		<h:form id="formNovoPaciente">
+			<p:fieldset legend="#{msg['cadastro-paciente-titulo-dados-paciente']}">
+				<p:panelGrid columns="2">
+					<p:outputLabel 
+						value="#{msg['cadastro-paciente-nome']}" 
+						for="nome" />
+					<p:inputText id="nome" 
+						value="#{pacienteBean.paciente.nome}"
+						required="true" 
+						requiredMessage="#{msg['cadastro-paciente-msg-req-nome']}"
+						validatorMessage="#{msg['cadastro-paciente-msg-req-nome-validator']}">
+						<f:validateLength maximum="50" />
+					</p:inputText>
+					<p:outputLabel 
+						value="#{msg['cadastro-paciente-email']}" 
+						for="email" />
+					<p:inputText 
+						id="email" 
+						value="#{pacienteBean.paciente.email}"
+						required="true" 
+						requiredMessage="#{msg['cadastro-paciente-msg-req-email']}"
+						validatorMessage="#{msg['register-user-email-msg-validator']}">
+						<f:validateLength maximum="30" />
+						<f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+						<p:message for="email"/>
+					</p:inputText>
+					<p:outputLabel 
+						value="#{msg['cadastro-paciente-telefone']}" 
+						for="telefone" />
+					<p:inputMask 
+						id="telefone" 
+						mask="99-9999-9999"
+						value="#{pacienteBean.paciente.telefone}" 
+						required="true"
+						requiredMessage="#{msg['cadastro-paciente-msg-req-telefone']}">
+					</p:inputMask>
+					<p:outputLabel 
+						value="#{msg['cadastro-paciente-data-nascimento']}" 
+						for="button" />
+					<p:calendar 
+						id="button"
+						value="#{pacienteBean.paciente.dataNascimento}" 
+						required="true"
+						requiredMessage="#{msg['cadastro-paciente-msg-req-data-nascimento']}" 
+						pattern="dd/MM/yyyy"
+						showOn="button">
+					</p:calendar>
+					<p:outputLabel 
+						value="#{msg['cadastro-paciente-ativo']}" 
+						for="ativo" />
+					<p:selectBooleanCheckbox 
+						id="ativo"
+						value="#{pacienteBean.paciente.ativo}" />
+				</p:panelGrid>
+			</p:fieldset>
+			<br />
+			<p:fieldset legend="#{msg['cadastro-paciente-titulo-endereco']}">
+				<p:panelGrid>
+					<p:commandButton 
+					value="#{msg['cadastro-paciente-botao-novo-endereco']}"
+					action="#{pacienteBean.newEndereco}" 
+					immediate="true" 
+					style="margin-bottom: 20px;"/>
+				</p:panelGrid>
+				<p:panelGrid columns="2">
+					<p:outputLabel 
+						value="#{msg['cadastro-paciente-tipo-endereco']}" 
+						for="tipoEndereco" />
+					<p:selectOneMenu 
+						value="#{pacienteBean.tipoEnderecoId}" 
+						id="tipoEndereco">
+						<f:selectItem 
+							itemValue="#{null}"
+							itemLabel="#{msg['cadastro-paciente-msg-label-tipo-endereco']}"
+							noSelectionOption="true" />
+						<f:selectItems 
+							value="#{pacienteBean.listaTipoEnderecos}"
+							var="tipoEndereco" 
+							itemLabel="#{tipoEndereco.descricao}"
+							itemValue="#{tipoEndereco.id}" />
+						<f:ajax 
+							listener="#{pacienteBean.selecionaEnderecoPorTipoEndereco}"
+							render="endereco" />
+					</p:selectOneMenu>
+					<p:outputLabel 
+						value="#{msg['cadastro-paciente-endereco']}" 
+						for="endereco" />
+					<p:selectOneMenu 
+						value="#{pacienteBean.enderecoId}" 
+						id="endereco">
+						<f:selectItem 
+							itemValue="#{null}"
+							itemLabel="#{msg['cadastro-paciente-msg-label-endereco']}"
+							noSelectionOption="true" />
+						<f:selectItems 
+							value="#{pacienteBean.listaEndereco}"
+							var="endereco" 
+							itemLabel="#{endereco.enderecoCompleto}"
+							itemValue="#{endereco.id}" />
+					</p:selectOneMenu>
+					<p:commandButton 
+						value="#{msg['cadastro-paciente-botao-adiciona-endereco']}"
+						action="#{pacienteBean.addEnderecoPaciente}" 
+						immediate="true"
+						process="@form" 
+						update="tabelaEnderecos">
+						<f:ajax 
+							execute="endereco" 
+							render="tabelaEnderecos"
+							immediate="true" />
+					</p:commandButton>
+					<p:dataTable 
+						value="#{pacienteBean.enderecosDoPaciente}"
+						var="endereco" 
+						id="tabelaEnderecos"
+						emptyMessage="#{msg['cadastro-paciente-nenhum-endereco']}">
+						<p:column>
+							<h:outputText value="#{endereco.enderecoCompleto}" />
+						</p:column>
+						<p:column>
+							<p:commandButton 
+								value="#{msg['cadastro-paciente-botao-remover-endereco']}"
+								action="#{pacienteBean.removeEnderecoPaciente(endereco)}"
+								update="tabelaEnderecos" 
+								immediate="true"
+								icon="fa fa-fw fa-remove" />
+						</p:column>
+					</p:dataTable>
+				</p:panelGrid>
+			</p:fieldset>
+			<p:panelGrid columns="2">
+				<p:commandButton 
+					value="#{msg['cadastro-paciente-botao-gravar']}"
+					action="#{pacienteBean.saveOrUpdate}" />
+				<p:commandButton 
+					value="#{msg['cadastro-paciente-botao-voltar']}"
+					action="#{pacienteBean.listPacientes}" 
+					immediate="true" />
+			</p:panelGrid>
+		</h:form>
+	</ui:define>
+	<ui:define name="rodape">
+	</ui:define>
+</ui:composition>
+</html>

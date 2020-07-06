@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="../_template.xhtml">
+	<ui:define name="titulo">
+		<p:outputLabel value="#{msg['cadastro-tipo-especialidade-titulo']}" />
+	</ui:define>
+	<ui:define name="conteudo">
+		<p:growl id="messages" showDetail="true" autoUpdate="true" />
+		<p:ajaxStatus style="display:block; margin-bottom:2em; height:100%;" />
+		<p:ajaxStatus onstart="PF('loadDialog').show()" onsuccess="PF('loadDialog').hide()"/>
+		<p:dialog 
+			widgetVar="loadDialog" 
+			modal="true"
+			draggable="false"
+			closable="false"
+			resizable="false"
+			showHeader="false">
+				<p:graphicImage 
+					library="gif"
+					name="loading2.gif"
+					title="loading" style="vertical-align: middle; width: 300px; height: 150px" />
+		</p:dialog>
+		<h:form id="formNovoTipoEspecialidade">
+			<p:fieldset legend="#{msg['cadastro-tipo-especialidade-titulo-dados-endereco']}">
+				<p:panelGrid columns="2">
+					<p:outputLabel 
+						value="#{msg['cadastro-tipo-especialidade-descricao']}" 
+						for="descricao" />
+					<p:inputText 
+						id="descricao"
+						value="#{tipoEspecialidadeBean.tipoEspecialidade.descricao}"
+						required="true" requiredMessage="#{msg['cadastro-tipo-especialidade-msg-req-descricao']}"
+						validatorMessage="#{msg['cadastro-tipo-especialidade-msg-validator-descricao']}">
+						<f:validateLength maximum="30" />
+					</p:inputText>
+					<p:commandButton 
+						value="#{msg['cadastro-tipo-especialidade-botao-gravar']}"
+						action="#{tipoEspecialidadeBean.saveOrUpdate}" />
+					<p:commandButton 
+						value="#{msg['cadastro-tipo-especialidade-botao-voltar']}"
+						action="#{tipoEspecialidadeBean.listTipoEspecialidade}"
+						immediate="true" />
+				</p:panelGrid>
+			</p:fieldset>
+		</h:form>
+	</ui:define>
+	<ui:define name="rodape">
+	</ui:define>
+</ui:composition>
+</html>

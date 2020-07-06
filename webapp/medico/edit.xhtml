@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="../_template.xhtml">
+	<ui:define name="titulo">
+		<p:outputLabel value="#{msg['cadastro-medico-titulo']}"/>
+	</ui:define>
+	<ui:define name="conteudo">
+		<p:growl id="messages" showDetail="true" autoUpdate="true" />
+		<p:ajaxStatus style="display:block; margin-bottom:2em; height:100%;" />
+		<p:ajaxStatus onstart="PF('loadDialog').show()" onsuccess="PF('loadDialog').hide()"/>
+		<p:dialog 
+			widgetVar="loadDialog" 
+			modal="true"
+			draggable="false"
+			closable="false"
+			resizable="false"
+			showHeader="false">
+				<p:graphicImage 
+					library="gif"
+					name="loading2.gif"
+					title="loading" style="vertical-align: middle; width: 300px; height: 150px" />
+		</p:dialog>
+		<h:form id="formNovoMedico">
+			<p:fieldset legend="#{msg['cadastro-medico-titulo-dados-medico']}">
+				<p:panelGrid columns="2">
+					<p:outputLabel
+						value="#{msg['cadastro-medico-nome']}" 
+						for="nome" />
+					<p:inputText 
+						id="nome" 
+						value="#{medicoBean.medico.nome}"
+						required="true" 
+						requiredMessage="#{msg['cadastro-medico-msg-req-nome']}"
+						validatorMessage="#{msg['Name can not exceed 50 characters']}">
+						<f:validateLength maximum="50" />
+					</p:inputText>
+					<p:outputLabel 
+						value="#{msg['cadastro-medico-crm']}" 
+						for="crm" />
+					<p:inputText 
+						id="crm" 
+						value="#{medicoBean.medico.crm}"
+						required="true" 
+						requiredMessage="#{msg['cadastro-medico-msg-req-crm']}">
+					</p:inputText>
+					<p:outputLabel 
+						value="#{msg['cadastro-medico-telefone']}" 
+						for="telefone" />
+					<p:inputMask 
+						id="telefone" 
+						mask="99-9999-9999"
+						value="#{medicoBean.medico.telefone}" 
+						required="true"
+						requiredMessage="#{msg['cadastro-medico-msg-req-telefone']}">
+					</p:inputMask>
+					<p:outputLabel 
+						value="#{msg['cadastro-medico-celular']}" 
+						for="celular" />
+					<p:inputMask 
+						id="celular" 
+						mask="99-99999-9999"
+						value="#{medicoBean.medico.celular}" 
+						required="true"
+						requiredMessage="#{msg['cadastro-medico-msg-req-celular']}">
+					</p:inputMask>
+					<p:outputLabel 
+						value="#{msg['cadastro-medico-email']}" 
+						for="email" />
+					<p:inputText 
+						id="email" 
+						value="#{medicoBean.medico.email}"
+						required="true" 
+						requiredMessage="#{msg['cadastro-medico-msg-req-email']}"
+						validatorMessage="#{msg['register-user-email-msg-validator']}">
+						<f:validateLength maximum="30" />
+						<f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+						<p:message for="email"/>
+					</p:inputText>
+					<p:outputLabel 
+						value="#{msg['cadastro-medico-ativo']}" 
+						for="ativo" />
+					<p:selectBooleanCheckbox 
+						id="ativo"
+						value="#{medicoBean.medico.ativo}" />
+					<p:outputLabel 
+						value="#{msg['cadastro-medico-tipo-especialidade']}" 
+						for="tipoEspecialidade" />
+					<p:selectOneMenu 
+						value="#{medicoBean.medico.tipoEspecialidade.id}"
+						id="tipoEspecialidade" 
+						required="true"
+						requiredMessage="#{msg['cadastro-medico-msg-req-tipo-especialidade']}">
+						<f:selectItem 
+							itemValue="#{null}"
+							itemLabel="#{msg['cadastro-medico-msg-label-tipo-especialidade']}"
+							noSelectionOption="true" />
+						<f:selectItems 
+							value="#{medicoBean.listaTipoEspecialidade}"
+							var="tipoEspecialidade" 
+							itemValue="#{tipoEspecialidade.id}"
+							itemLabel="#{tipoEspecialidade.descricao}" />
+					</p:selectOneMenu>
+					<p:commandButton 
+						value="#{msg['cadastro-medico-botao-novo-tipo-especialidade']}"
+						action="#{medicoBean.newTipoEspecialidade}" 
+						immediate="true" />
+				</p:panelGrid>
+			</p:fieldset>
+			<br />
+			<p:fieldset legend="#{msg['cadastro-medico-titulo-endereco']}">
+				<p:panelGrid>
+					<p:commandButton 
+						value="#{msg['cadastro-medico-botao-novo-endereco']}"
+						action="#{medicoBean.newEndereco}" 
+						immediate="true" 
+						style="margin-bottom: 20px;" />
+				</p:panelGrid>
+				<p:panelGrid columns="2">
+					<p:outputLabel 
+						value="#{msg['cadastro-medico-tipo-endereco']}" 
+						for="tipoEndereco" />
+					<p:selectOneMenu 
+						value="#{medicoBean.tipoEnderecoId}"
+						id="tipoEndereco">
+						<f:selectItem 
+							itemValue="#{null}"
+							itemLabel="#{msg['cadastro-medico-msg-label-tipo-endereco']}"
+							noSelectionOption="true" />
+						<f:selectItems 
+							value="#{medicoBean.listaTipoEnderecos}"
+							var="tipoEndereco" 
+							itemLabel="#{tipoEndereco.descricao}"
+							itemValue="#{tipoEndereco.id}" />
+						<f:ajax 
+							listener="#{medicoBean.selecionaEnderecoPorTipoEndereco}" 
+							render="endereco" />
+					</p:selectOneMenu>
+					<p:outputLabel 
+						value="#{msg['cadastro-medico-endereco']}" 
+						for="endereco" />
+					<p:selectOneMenu 
+						value="#{medicoBean.enderecoId}" 
+						id="endereco">
+						<f:selectItem 
+							itemValue="#{null}"
+							itemLabel="#{msg['cadastro-medico-msg-label-endereco']}"
+							noSelectionOption="true" />
+						<f:selectItems 
+							value="#{medicoBean.listaEndereco}" 
+							var="endereco"
+							itemLabel="#{endereco.enderecoCompleto}"
+							itemValue="#{endereco.id}" />
+					</p:selectOneMenu>
+					<p:commandButton 
+						value="#{msg['cadastro-medico-botao-adiciona-endereco']}"
+						action="#{medicoBean.addEnderecoMedico}" 
+						immediate="true"
+						process="@form" 
+						update="tabelaEnderecos">
+						<f:ajax 
+							execute="endereco" 
+							render="tabelaEnderecos"
+							immediate="true" />
+					</p:commandButton>
+				</p:panelGrid>
+				<p:dataTable 
+					value="#{medicoBean.enderecosDoMedico}" 
+					var="endereco"
+					id="tabelaEnderecos" 
+					emptyMessage="#{msg['cadastro-medico-nenhum-endereco']}">
+					<p:column>
+						<h:outputText value="#{endereco.enderecoCompleto} " />
+					</p:column>
+					<p:column>
+						<p:commandButton 
+							value="#{msg['cadastro-medico-botao-remover-endereco']}"
+							action="#{medicoBean.removeEnderecoMedico(endereco)}"
+							update="tabelaEnderecos" 
+							immediate="true"
+							icon="fa fa-fw fa-remove" />
+					</p:column>
+				</p:dataTable>
+				<br />
+				<p:panelGrid>
+					<p:commandButton 
+						value="#{msg['cadastro-medico-botao-gravar']}"
+						action="#{medicoBean.saveOrUpdate}" />
+					<p:commandButton 
+						value="#{msg['cadastro-medico-botao-voltar']}" 
+						action="#{medicoBean.listMedicos}"
+						immediate="true" />
+				</p:panelGrid>
+			</p:fieldset>
+		</h:form>
+	</ui:define>
+	<ui:define name="rodape">
+	</ui:define>
+</ui:composition>
+</html>

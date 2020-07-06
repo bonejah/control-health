@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="../_template.xhtml">
+	<ui:define name="titulo">
+		<p:outputLabel value="#{msg['cadastro-endereco-titulo']}"/>
+	</ui:define>
+	<ui:define name="conteudo">
+		<p:growl id="messages" showDetail="true" autoUpdate="true" />
+		<p:ajaxStatus style="display:block; margin-bottom:2em; height:100%;" />
+		<p:ajaxStatus onstart="PF('loadDialog').show()" onsuccess="PF('loadDialog').hide()"/>
+		<p:dialog 
+			widgetVar="loadDialog" 
+			modal="true"
+			draggable="false"
+			closable="false"
+			resizable="false"
+			showHeader="false">
+				<p:graphicImage 
+					library="gif"
+					name="loading2.gif"
+					title="loading" style="vertical-align: middle; width: 300px; height: 150px" />
+		</p:dialog>
+		<p:fieldset legend="#{msg['cadastro-endereco-titulo-dados-endereco']}">
+			<h:form id="formNovoTipoEndereco">
+				<p:commandButton 
+					value="#{msg['cadastro-endereco-botao-novo-tipo-endereco']}" 
+					action="#{enderecoBean.newTipoEndereco}" 
+					icon="ui-icon-disk" 
+					style="margin-bottom: 20px;"/>
+			</h:form>
+			<h:form id="formNovoEndereco">
+				<h:panelGroup>
+					<p:panelGrid columns="2">
+						<p:outputLabel 
+							value="#{msg['cadastro-endereco-tipo-endereco']}" 
+							for="tipoEndereco" />
+						<p:selectOneMenu 
+							value="#{enderecoBean.endereco.tipoEndereco.id}"
+							id="tipoEndereco" 
+							required="true"
+							requiredMessage="#{msg['cadastro-endereco-msg-req-tipo-endereco']}">
+							<f:selectItem 
+								itemValue="#{null}"
+								itemLabel="#{msg['cadastro-endereco-msg-label-tipo-endereco']}"
+								noSelectionOption="true" />
+							<f:selectItems 
+								value="#{enderecoBean.listaTipoEnderecos}"
+								var="tipoEndereco" 
+								itemValue="#{tipoEndereco.id}"
+								itemLabel="#{tipoEndereco.descricao}" />
+						</p:selectOneMenu>
+						<p:outputLabel 
+							value="#{msg['cadastro-endereco-local']}" 
+							for="local" />
+						<p:inputText 
+							id="local" 
+							value="#{enderecoBean.endereco.local}"
+							required="true" 
+							requiredMessage="#{msg['cadastro-endereco-msg-req-local']}"
+							validatorMessage="#{msg['cadastro-endereco-msg-req-local-validator']}">
+							<f:validateLength maximum="50" />
+						</p:inputText>
+						<p:outputLabel 
+							value="#{msg['cadastro-endereco-bairro']}" 
+							for="bairro" />
+						<p:inputText 
+							id="bairro" 
+							value="#{enderecoBean.endereco.bairro}"
+							required="true" 
+							requiredMessage="#{msg['cadastro-endereco-msg-req-bairro']}"
+							validatorMessage="#{msg['cadastro-endereco-msg-req-bairro-validator']}">
+							<f:validateLength maximum="20" />
+						</p:inputText>
+						<p:outputLabel 
+							value="#{msg['cadastro-endereco-logradouro']}" 
+							for="logradouro" />
+						<p:inputText 
+							id="logradouro"
+							value="#{enderecoBean.endereco.logradouro}" 
+							required="true"
+							requiredMessage="#{msg['cadastro-endereco-msg-req-logradouro']}"
+							validatorMessage="#{msg['cadastro-endereco-msg-req-logradouro-validator']}">
+							<f:validateLength maximum="50" />
+						</p:inputText>
+						<p:outputLabel 
+							value="#{msg['cadastro-endereco-numero']}" 
+							for="numero" />
+						<p:inputText 
+							id="numero" 
+							value="#{enderecoBean.endereco.numero}"
+							required="true" 
+							requiredMessage="#{msg['cadastro-endereco-msg-req-numero']}"
+							validatorMessage="#{msg['cadastro-endereco-msg-req-numero-validator']}">
+							<f:validateLength minimum="1" />
+						</p:inputText>
+						<p:outputLabel 
+							value="#{msg['cadastro-endereco-cep']}" 
+							for="cep" />
+						<p:inputMask 
+							id="cep"
+							mask="99999-999" 
+							value="#{enderecoBean.endereco.cep}" 
+							required="true"
+							requiredMessage="#{msg['cadastro-endereco-msg-req-cep']}"
+							validatorMessage="#{msg['cadastro-endereco-msg-req-cep-validator']}">
+							<f:validateLength maximum="10" />
+						</p:inputMask>
+						<p:outputLabel 
+							value="#{msg['cadastro-endereco-estado']}" 
+							for="estado" />
+						<p:inputText 
+							id="estado" 
+							value="#{enderecoBean.endereco.estado}"
+							required="true" 
+							requiredMessage="#{msg['cadastro-endereco-msg-req-estado']}"
+							validatorMessage="#{msg['cadastro-endereco-msg-req-estado-validator']}">
+							<f:validateLength maximum="20" />
+						</p:inputText>
+						<p:outputLabel 
+							value="#{msg['cadastro-endereco-capital']}" 
+							for="capital" />
+						<p:inputText 
+							id="capital" 
+							value="#{enderecoBean.endereco.capital}"
+							required="true" 
+							requiredMessage="#{msg['cadastro-endereco-msg-req-capital']}"
+							validatorMessage="#{msg['cadastro-endereco-msg-req-capital-validator']}">
+							<f:validateLength maximum="20" />
+						</p:inputText>
+						<p:outputLabel 
+							value="#{msg['cadastro-endereco-pais']}" 
+							for="pais" />
+						<p:inputText 
+							id="pais" 
+							value="#{enderecoBean.endereco.pais}"
+							required="true" 
+							requiredMessage="#{msg['cadastro-endereco-msg-req-pais']}"
+							validatorMessage="#{msg['cadastro-endereco-msg-req-pais-validator']}">
+							<f:validateLength maximum="20" />
+						</p:inputText>
+						<p:commandButton 
+							value="#{msg['cadastro-endereco-botao-gravar']}" 
+							action="#{enderecoBean.saveOrUpdate}" />
+						<p:commandButton 
+							value="#{msg['cadastro-endereco-botao-voltar']}" 
+							action="#{enderecoBean.listEnderecos}" 
+							immediate="true" />
+					</p:panelGrid>
+				</h:panelGroup>
+		</h:form>
+		</p:fieldset>
+	</ui:define>
+	<ui:define name="rodape">
+	</ui:define>
+</ui:composition>
+</html>

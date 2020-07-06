@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0">
+
+	<persistence-unit name="controlHealth" transaction-type="RESOURCE_LOCAL">
+   	<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<class>br.com.controlHealth.model.Consulta</class>
+		<class>br.com.controlHealth.model.Endereco</class>
+		<class>br.com.controlHealth.model.Medico</class>			
+	 	<class>br.com.controlHealth.model.Paciente</class>
+		<class>br.com.controlHealth.model.TipoEndereco</class>
+		<class>br.com.controlHealth.model.TipoEspecialidade</class>
+		<class>br.com.controlHealth.model.User</class>
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/controlhealth-des" />
+			<property name="javax.persistence.jdbc.user" value="root" />
+			<property name="javax.persistence.jdbc.password" value="rootadmin" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect" />
+			<property name="hibernate.max_fetch_depth" value="3"/>
+			<property name="hibernate.jdbc.batch_size" value="50" />
+		</properties>
+	</persistence-unit>
+</persistence>
+

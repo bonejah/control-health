@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</h:head>
+<h:body>
+	<h:outputStylesheet 
+		library="css" 
+		name="style.css" />
+	<div style="float: right; margin-right: 10px;">
+		<h:form>
+			<p:commandLink
+				actionListener="#{languageBean.changeLanguage('pt')}"
+				update="@all"
+				immediate="true">
+				<h:graphicImage 
+					library="img" 
+					name="brazil.png" 
+					title="Brazil" />
+			</p:commandLink>
+			<h:outputText value=" " />
+			<p:commandLink 
+				actionListener="#{languageBean.changeLanguage('en')}"
+				update="@all"
+				immediate="true">
+				<h:graphicImage 
+					library="img" 
+					name="gbrit.png" 
+					title="English" />
+			</p:commandLink>
+		</h:form>
+	</div>
+	<div id="cabecalho">
+		<h:form rendered="#{usuarioLogado != null}">
+			<h:outputText
+				value="#{msg['boas-vindas']} #{sessionScope['usuarioLogado'].nickName}" />
+			<br />
+			<p:growl id="messages" showDetail="true" autoUpdate="true" />
+			<p:ajaxStatus style="display:block; margin-bottom:2em; height:100%;" />
+			<p:ajaxStatus onstart="PF('loadDialog').show()" onsuccess="PF('loadDialog').hide()"/>
+			<p:dialog 
+				widgetVar="loadDialog" 
+				modal="true"
+				draggable="false"
+				closable="false"
+				resizable="false"
+				showHeader="false">
+					<p:graphicImage 
+						library="gif"
+						name="loading2.gif"
+						title="loading" style="vertical-align: middle; width: 300px; height: 150px" />
+			</p:dialog>
+			<p:menubar style="margin-top: 10px">
+				<p:submenu label="#{msg['menu-consulta']}">
+					<p:menuitem 
+						value="#{msg['menu-listar-consultas']}"
+						action="#{consultaBean.listConsultas}" />
+					<p:separator />
+					<p:menuitem 
+						value="#{msg['menu-cadastrar-consulta']}"
+						action="#{consultaBean.newConsulta}" />
+				</p:submenu>
+				<p:submenu label="#{msg['menu-paciente']}">
+					<p:menuitem 
+						value="#{msg['menu-listar-pacientes']}"
+						action="#{pacienteBean.listPacientes}" />
+					<p:separator />
+					<p:menuitem 
+						value="#{msg['menu-cadastrar-paciente']}"
+						action="#{pacienteBean.newPaciente}" />
+				</p:submenu>
+				<p:submenu label="#{msg['menu-medico']}">
+					<p:menuitem 
+						value="#{msg['menu-listar-medicos']}"
+						action="#{medicoBean.listMedicos}" />
+					<p:separator />
+					<p:menuitem 
+						value="#{msg['menu-cadastrar-medico']}"
+						action="#{medicoBean.newMedico}" />
+				</p:submenu>
+				<p:submenu label="#{msg['menu-endereco']}">
+					<p:menuitem 
+						value="#{msg['menu-listar-enderecos']}"
+						action="#{enderecoBean.listEnderecos}" />
+					<p:separator />
+					<p:menuitem 
+						value="#{msg['menu-cadastrar-endereco']}"
+						action="#{enderecoBean.newEndereco}" />
+				</p:submenu>
+				<p:submenu label="#{msg['menu-tipo-endereco']}">
+					<p:menuitem 
+						value="#{msg['menu-listar-tipo-enderecos']}"
+						action="#{tipoEnderecoBean.listTipoEndereco}" />
+					<p:separator />
+					<p:menuitem 
+						value="#{msg['menu-cadastrar-tipo-endereco']}"
+						action="#{tipoEnderecoBean.newTipoEndereco}" />
+				</p:submenu>
+				<p:submenu label="#{msg['menu-tipo-especialidade']}">
+					<p:menuitem 
+						value="#{msg['menu-listar-tipo-especialidades']}"
+						action="#{tipoEspecialidadeBean.listTipoEspecialidade}" />
+					<p:separator />
+					<p:menuitem 
+						value="#{msg['menu-cadastrar-tipo-especialidade']}"
+						action="#{tipoEspecialidadeBean.newTipoEspecialidade}" />
+				</p:submenu>
+				<p:submenu label="#{msg['menu-relatorios']}">
+					<p:menuitem 
+						value="#{msg['menu-relatorios-paciente-ano']}"
+						action="#{relatorioConsultaPacienteBean.listaRelatorioConsultaPacientePorAno}" />
+					<p:separator />
+				</p:submenu>
+				<p:submenu 
+					label="#{msg['menu-admin']}" 
+					rendered="#{usuarioLogado.isAdmin}">
+					<p:menuitem 
+						value="#{msg['menu-admin-usuarios']}"
+						action="#{adminBean.listUsers}" />
+					<p:separator />
+				</p:submenu>
+				<f:facet name="options">
+					<p:commandButton 
+						value="Logout" 
+						icon="ui-icon-extlink"
+						action="#{loginBean.logout}" 
+						immediate="true" />
+				</f:facet>
+			</p:menubar>
+		</h:form>
+	</div>
+	<div 
+		id="titulo" 
+		class="titulo">
+		<ui:insert name="titulo" />
+	</div>
+	<div id="conteudo">
+		<ui:insert name="conteudo" />
+	</div>
+	<div id="bottom">
+		<ui:insert name="rodape">
+			<div class="bottom">
+				<span>
+					<h:outputText value="#{msg['desenvolvido']}" />
+				</span>
+				<br />
+				<span>
+					<h:outputText style="margin-left: 50px; font-size: 14px" value="#{loginBean.nameApp} - version: #{loginBean.versionApp}" />
+				</span>
+			</div>
+		</ui:insert>
+	</div>
+</h:body>
+</html>

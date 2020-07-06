@@ -1,0 +1,33 @@
+body {
+	min-width: 600px;
+}
+
+.divLogin {
+	margin: 0 auto;
+}
+
+.titulo {
+	width: 400px;
+	margin: 0 auto;
+	margin-top: 10px;
+	text-align: center;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.bottom {
+	width: 280px;
+	margin: 0 auto;
+	margin-top: 300px
+}
+
+.language {
+	position: absolute;
+	
+}
+
+.divFieldSet {
+	width: 350px;
+	margin: 0 auto;
+}
+

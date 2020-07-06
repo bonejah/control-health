@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="../_template.xhtml">
+	<ui:define name="titulo">
+		<p:outputLabel value="#{msg['cadastro-titulo']}" />
+	</ui:define>
+	<ui:define name="conteudo">
+		<h:form id="formNovaConsulta">
+			<p:growl id="messages" showDetail="true" autoUpdate="true" />
+			<p:ajaxStatus style="display:block; margin-bottom:2em; height:100%;" />
+			<p:ajaxStatus onstart="PF('loadDialog').show()" onsuccess="PF('loadDialog').hide()"/>
+			<p:dialog 
+				widgetVar="loadDialog" 
+				modal="true"
+				draggable="false"
+				closable="false"
+				resizable="false"
+				showHeader="false">
+					<p:graphicImage 
+						library="gif"
+						name="loading2.gif"
+						title="loading" style="vertical-align: middle; width: 300px; height: 150px" />
+			</p:dialog>
+			<p:fieldset legend="#{msg['cadastro-titulo-dados-consulta']}">
+				<h:panelGroup>
+					<p:panelGrid columns="2">
+						<p:outputLabel 
+							value="#{msg['cadastro-paciente']}" 
+							for="paciente" />
+						<p:selectOneMenu 
+							id="paciente" 
+							value="#{consultaBean.consulta.paciente.id}"
+							required="true"
+							requiredMessage="#{msg['cadastro-msg-req-paciente']}">
+							<f:selectItem 
+								itemValue="#{null}"
+								itemLabel="#{msg['cadastro-msg-label-paciente']}"
+								noSelectionOption="true" />
+							<f:selectItems 
+								value="#{consultaBean.listaPacientes}"
+								var="paciente" 
+								itemLabel="#{paciente.nome}"
+								itemValue="#{paciente.id}" />
+						</p:selectOneMenu>
+						<p:outputLabel 
+							value="#{msg['cadastro-medico']}" 
+							for="medico" />
+						<p:selectOneMenu 
+							id="medico" 
+							value="#{consultaBean.consulta.medico.id}"
+							required="true" 
+							requiredMessage="#{msg['cadastro-msg-req-medico']}">
+							<f:selectItem 
+								itemValue="#{null}"
+								itemLabel="#{msg['cadastro-msg-label-medico']}"
+								noSelectionOption="true" />
+							<f:selectItems 
+								value="#{consultaBean.listaMedicos}" 
+								var="medico"
+								itemLabel="#{medico.nome}" 
+								itemValue="#{medico.id}" />
+						</p:selectOneMenu>
+						<p:outputLabel 
+							value="#{msg['cadastro-data-consulta']}" 
+							for="buttonDataConsulta" />
+						<p:calendar 
+							id="buttonDataConsulta"
+							value="#{consultaBean.consulta.dataConsulta}" 
+							required="true"
+							requiredMessage="#{msg['cadastro-msg-req-data-consulta']}" 
+							showOn="button"
+							pattern="dd/MM/yyyy">
+						</p:calendar>
+						<p:outputLabel 
+							value="#{msg['cadastro-data-retorno']}" 
+							for="buttonDataRetorno" />
+						<p:calendar 
+							id="buttonDataRetorno"
+							value="#{consultaBean.consulta.dataRetorno}" 
+							showOn="button"
+							pattern="dd/MM/yyyy">
+						</p:calendar>
+					</p:panelGrid>
+				</h:panelGroup>
+			</p:fieldset>
+			<br />
+			<p:fieldset legend="#{msg['cadastro-titulo-dados-paciente']}">
+				<h:panelGroup>
+					<p:panelGrid columns="2">
+						<p:outputLabel 
+							value="#{msg['cadastro-peso']}" 
+							for="peso" />
+						<p:inputText 
+							id="peso"
+							value="#{consultaBean.consulta.dadosDaConsulta.peso}" />
+						<p:outputLabel 
+							value="#{msg['cadastro-estatura']}" 
+							for="estatura" />
+						<p:inputText 
+							id="estatura"
+							value="#{consultaBean.consulta.dadosDaConsulta.estatura}" />
+						<p:outputLabel 
+							value="#{msg['cadastro-percentual-craniano']}" 
+							for="percentualCraniano" />
+						<p:inputText 
+							id="percentualCraniano"
+							value="#{consultaBean.consulta.dadosDaConsulta.percentualCraniano}" />
+						<p:outputLabel 
+							value="#{msg['cadastro-descricao']}" 
+							for="descricao"
+							title="Informe aqui os dados da consulta" />
+						<p:inputTextarea 
+							id="descricao" 
+							cols="100" 
+							rows="10"
+							value="#{consultaBean.consulta.dadosDaConsulta.descricaoDaConsulta}" />
+						<p:commandButton 
+							value="#{msg['cadastro-botao-gravar']}"
+							action="#{consultaBean.saveOrUpdate}" />
+						<p:commandButton 
+							value="#{msg['cadastro-botao-voltar']}"
+							action="#{consultaBean.listConsultas}" 
+							immediate="true" />
+					</p:panelGrid>
+				</h:panelGroup>
+			</p:fieldset>
+		</h:form>
+	</ui:define>
+	<ui:define name="rodape">
+	</ui:define>
+</ui:composition>
+</html>

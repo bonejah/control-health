@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="../_template.xhtml">
+	<ui:define name="titulo">
+		<p:outputLabel value="#{msg['list-users']}" />
+	</ui:define>
+	<ui:define name="conteudo">
+		<p:growl id="messages" showDetail="true" autoUpdate="true" />
+		<p:ajaxStatus style="display:block; margin-bottom:2em; height:100%;" />
+		<p:ajaxStatus onstart="PF('loadDialog').show()" onsuccess="PF('loadDialog').hide()"/>
+		<p:dialog 
+			widgetVar="loadDialog" 
+			modal="true"
+			draggable="false"
+			closable="false"
+			resizable="false"
+			showHeader="false">
+				<p:graphicImage 
+					library="gif"
+					name="loading2.gif"
+					title="loading" style="vertical-align: middle; width: 300px; height: 150px" />
+		</p:dialog>
+		<p:fieldset legend="#{msg['lista-consulta-titulo']}">
+			<h:form id="formNewUser">
+				<p:commandButton 
+					value="#{msg['list-users-button-new-user']}"
+					action="#{adminBean.addUser}" 
+					icon="ui-icon-disk"
+					style="margin-bottom: 20px;" />
+			</h:form>
+			<h:form 
+				id="formTbUsers" 
+				style="text-align:center">
+				<p:dataTable 
+					id="tbUsers" 
+					var="user"
+					widgetVar="userTable"
+					rows="10" 
+					paginator="true" 
+					filterDelay="1000"
+					lazy="true" 
+					value="#{adminBean.model}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					emptyMessage="#{msg['list-users-no-register']}">
+					<p:column
+						headerText="#{msg['list-user-id']}"
+						sortBy="#{user.id}"
+						filterBy="#{user.id}" 
+						filterMatchMode="exact"	>
+						<h:outputText value="#{user.id}" />
+					</p:column>
+					<p:column
+						headerText="#{msg['list-user-nickname']}"
+						sortBy="#{user.nickName}"
+						filterBy="#{user.nickName}" 
+						filterMatchMode="contains">
+						<h:outputText value="#{user.nickName}" />
+					</p:column>
+					<p:column
+						headerText="#{msg['list-user-email']}"
+						sortBy="#{user.email}"
+						filterBy="#{user.email}" 
+						filterMatchMode="contains">
+						<h:outputText value="#{user.email}" />
+					</p:column>
+					<p:column
+						headerText="#{msg['list-user-isAdmin']}"
+						sortBy="#{user.email}">
+						<h:outputText value="#{user.isAdmin}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<p:outputLabel value="#{msg['list-user-actions']}" />
+						</f:facet>
+						<p:commandButton 
+							icon="fa fa-fw fa-eye" 
+							update=":formDlg"
+							action="#{adminBean.viewUser(user)}"
+							oncomplete="PF('dlg').show()"
+							title="#{msg['llist-user-button-view-user']}" />
+						<p:commandButton 
+							icon="fa fa-fw fa-edit"
+							update=":formTbUsers:tbUsers"
+							action="#{adminBean.editUser(user)}" 
+							process="@form"
+							title="#{msg['list-user-button-edit-user']}" />
+						<p:commandButton 
+							icon="fa fa-fw fa-remove"
+							update=":formTbUsers:tbUsers"
+							action="#{adminBean.deleteUser(user)}" 
+							process="@form"
+							title="#{msg['list-user-button-remove-user']}">
+							<p:confirm 
+								header="#{msg['register-user-msg-id']} #{user.id}" 
+								message="#{msg['register-user-msg-conf-exclusao-consulta']}" 
+								icon="pi pi-exclamation-triangle" />
+						</p:commandButton>		
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" closeOnEscape="true">
+					        <p:commandButton 
+					        	value="#{msg['modal-btn-excluir-consulta-sim']}" 
+					        	type="button" 
+					        	styleClass="ui-confirmdialog-yes" 
+					        	icon="pi pi-check" />	
+					        <p:commandButton 
+					        	value="#{msg['modal-btn-excluir-consulta-nao']}" 
+					        	type="button" 
+					        	styleClass="ui-confirmdialog-no" 
+					        	icon="pi pi-times" />
+					    </p:confirmDialog>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+			<h:form id="formDlg">
+				<p:dialog 
+					modal="true" 
+					resizable="false" 
+					dynamic="true"
+					draggable="true"
+					header="#{msg['modal-user-title']} - #{adminBean.user.nickName}"
+					widgetVar="dlg"
+					closeOnEscape="true">
+					<h:panelGroup>
+						<p:panelGrid columns="2">
+							<p:outputLabel 
+								value="#{msg['modal-user-nickname']}" 
+								for="nickname" />
+							<h:outputText 
+								id="nickname" 
+								value="#{adminBean.user.nickName}" />
+							<p:outputLabel 
+								value="#{msg['modal-user-email']}" 
+								for="email" />
+							<h:outputText 
+								id="email" 
+								value="#{adminBean.user.email}" />
+							<p:outputLabel 
+								value="#{msg['modal-user-isadmin']}" 
+								for="isadmin" />
+							<h:outputText 
+								id="isadmin" 
+								value="#{adminBean.user.isAdmin}">
+							</h:outputText>
+						</p:panelGrid>
+					</h:panelGroup>
+				</p:dialog>
+			</h:form>
+		</p:fieldset>
+	</ui:define>
+	<ui:define name="rodape">
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="../_template.xhtml">
+	<ui:define name="titulo">
+		<p:outputLabel value="#{msg['lista-paciente-titulo']}" />
+	</ui:define>
+	<ui:define name="conteudo">
+		<p:growl id="messages" showDetail="true" autoUpdate="true" />
+		<p:ajaxStatus style="display:block; margin-bottom:2em; height:100%;" />
+		<p:ajaxStatus onstart="PF('loadDialog').show()" onsuccess="PF('loadDialog').hide()"/>
+		<p:dialog 
+			widgetVar="loadDialog" 
+			modal="true"
+			draggable="false"
+			closable="false"
+			resizable="false"
+			showHeader="false">
+				<p:graphicImage 
+					library="gif"
+					name="loading2.gif"
+					title="loading" style="vertical-align: middle; width: 300px; height: 150px" />
+		</p:dialog>
+		<p:fieldset legend="#{msg['lista-paciente-titulo']}">
+			<h:form id="formNovoPaciente">
+				<p:commandButton 
+					value="#{msg['lista-paciente-botao-novo-paciente']}"
+					action="#{pacienteBean.newPaciente}" 
+					icon="ui-icon-disk" 
+					style="margin-bottom: 20px;" />
+			</h:form>
+			<h:form 
+				id="formTabelaPacientes" 
+				style="text-align:center">
+				<p:dataTable 
+					id="tabelaPacientes"
+					var="paciente"
+					widgetVar="pacienteTable"
+					rows="10"
+					paginator="true"
+					filterDelay="1000"
+					value="#{pacienteBean.model}" 
+					lazy="true"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					emptyMessage="#{msg['lista-paciente-nenhum-registro']}">
+					<p:column 
+						headerText="#{msg['lista-paciente-paciente']}"
+						sortBy="#{paciente.nome}"
+						filterBy="#{paciente.id}" 
+						filterMatchMode="exact">
+						<f:facet name="filter">
+			                <p:selectOneMenu 
+			                	onchange="PF('pacienteTable').filter()" 
+			                	styleClass="custom-filter">
+			                    <f:selectItem 
+			                    	itemLabel="#{msg['lista-paciente-selecione-paciente']}" 
+			                    	itemValue="#{null}" 
+			                    	noSelectionOption="true" />
+			                    <f:selectItems 
+			                    	var="paciente" 
+			                    	value="#{pacienteBean.listaPacientes}" 
+			                    	itemLabel="#{paciente.nome}" 
+			                    	itemValue="#{paciente.id}" />
+			                </p:selectOneMenu>
+			            </f:facet>	
+						<h:outputText value="#{paciente.nome}" />
+					</p:column>
+					<p:column
+						headerText="#{msg['lista-paciente-email']}"
+						sortBy="#{paciente.email}"
+						filterBy="#{paciente.email}" 
+						filterMatchMode="contains">
+						<h:outputText value="#{paciente.email}" />
+					</p:column>
+					<p:column
+						headerText="#{msg['lista-paciente-telefone']}"
+						sortBy="#{paciente.telefone}"
+						filterBy="#{paciente.telefone}"
+						filterMatchMode="contains">
+						<h:outputText value="#{paciente.telefone}" />
+					</p:column>
+					<p:column 
+						headerText="#{msg['lista-paciente-data-nascimento']}"
+						sortBy="#{paciente.dataNascimento}"
+						filterBy="#{paciente.dataNascimento}">
+						<h:outputText value="#{paciente.dataNascimento.time}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="#{msg['lista-paciente-acoes']}">
+						<p:commandButton 
+							icon="fa fa-fw fa-eye"
+							action="#{pacienteBean.viewPaciente(paciente)}"
+							oncomplete="PF('dlg').show()" 
+							update=":formDlg" 
+							title="#{msg['lista-paciente-botao-visualizar-paciente']}" />
+						<p:commandButton
+							action="#{pacienteBean.editPaciente(paciente)}"
+							icon="fa fa-fw fa-edit"
+							update=":formTabelaPacientes:tabelaPacientes" 
+							process="@form" 
+							title="#{msg['lista-paciente-botao-editar-paciente']}" />
+						<p:commandButton 
+							action="#{pacienteBean.deletePaciente(paciente)}"
+							icon="fa fa-fw fa-remove"
+							update=":formTabelaPacientes:tabelaPacientes" 
+							process="@form" 
+							title="#{msg['lista-paciente-botao-excluir-paciente']}">
+							<p:confirm 
+								header="#{msg['lista-paciente-msg-id']} #{consulta.id}" 
+								message="#{msg['lista-paciente-msg-conf-exclusao-consulta']}" 
+								icon="pi pi-exclamation-triangle" />
+						</p:commandButton>
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" closeOnEscape="true">
+					        <p:commandButton 
+					        	value="#{msg['modal-btn-excluir-consulta-sim']}" 
+					        	type="button" 
+					        	styleClass="ui-confirmdialog-yes" 
+					        	icon="pi pi-check" />	
+					        <p:commandButton 
+					        	value="#{msg['modal-btn-excluir-consulta-nao']}" 
+					        	type="button" 
+					        	styleClass="ui-confirmdialog-no" 
+					        	icon="pi pi-times" />
+					    </p:confirmDialog>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+			<h:form id="formDlg">
+				<p:dialog 
+					modal="true" 
+					resizable="false" 
+					dynamic="true"
+					draggable="true" 
+					header="#{msg['modal-paciente-titulo']} - #{pacienteBean.paciente.nome}"
+					widgetVar="dlg"
+					closeOnEscape="true">
+					<h:panelGroup>
+						<p:panelGrid columns="2">
+							<p:outputLabel 
+								value="#{msg['modal-paciente-paciente']}" 
+								for="paciente" />
+							<h:outputText 
+								id="paciente" 
+								value="#{pacienteBean.paciente.nome}" />
+							<p:outputLabel 
+								value="#{msg['modal-paciente-email']}" 
+								for="email" />
+							<h:outputText 
+								id="email" 
+								value="#{pacienteBean.paciente.email}" />
+							<p:outputLabel 
+								value="#{msg['modal-paciente-telefone']}" 
+								for="telefone" />
+							<h:outputText 
+								id="telefone"
+								value="#{pacienteBean.paciente.telefone}" />
+							<p:outputLabel 
+								value="#{msg['modal-paciente-data-nascimento']}" 
+								for="dtNascimento" />
+							<h:outputText 
+								id="dtNascimento"
+								value="#{pacienteBean.paciente.dataNascimento}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:panelGrid>
+					</h:panelGroup>
+				</p:dialog>
+			</h:form>
+		</p:fieldset>
+	</ui:define>
+	<ui:define name="rodape">
+	</ui:define>
+</ui:composition>
+</html>

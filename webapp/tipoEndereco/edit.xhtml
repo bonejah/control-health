@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="../_template.xhtml">
+	<ui:define name="titulo">
+		<p:outputLabel value="#{msg['cadastro-tipo-endereco-titulo']}"/>
+	</ui:define>
+	<ui:define name="conteudo">
+		<p:growl id="messages" showDetail="true" autoUpdate="true" />
+		<p:ajaxStatus style="display:block; margin-bottom:2em; height:100%;" />
+		<p:ajaxStatus onstart="PF('loadDialog').show()" onsuccess="PF('loadDialog').hide()"/>
+		<p:dialog 
+			widgetVar="loadDialog" 
+			modal="true"
+			draggable="false"
+			closable="false"
+			resizable="false"
+			showHeader="false">
+				<p:graphicImage 
+					library="gif"
+					name="loading2.gif"
+					title="loading" 
+					style="vertical-align: middle; width: 300px; height: 150px" />
+		</p:dialog>
+		<h:form id="formNovoTipoEndereco">
+			<p:fieldset legend="#{msg['cadastro-tipo-endereco-titulo-dados-endereco']}">
+				<p:panelGrid columns="2">
+					<p:outputLabel 
+						value="#{msg['cadastro-tipo-endereco-descricao']}" 
+						for="descricao" />
+					<p:inputText 
+						id="descricao"
+						value="#{tipoEnderecoBean.tipoEndereco.descricao}" 
+						required="true"
+						requiredMessage="#{msg['cadastro-tipo-endereco-msg-req-descricao']}"
+						validatorMessage="#{msg['cadastro-tipo-endereco-msg-validator-descricao']}">
+						<f:validateLength maximum="15" />
+					</p:inputText>
+					<p:commandButton 
+						value="#{msg['cadastro-tipo-endereco-botao-gravar']}"
+						action="#{tipoEnderecoBean.saveOrUpdate}" />
+					<p:commandButton 
+						value="#{msg['cadastro-tipo-endereco-botao-voltar']}"
+						action="#{tipoEnderecoBean.listTipoEndereco}" 
+						immediate="true" />
+				</p:panelGrid>
+			</p:fieldset>
+		</h:form>
+	</ui:define>
+	<ui:define name="rodape">
+	</ui:define>
+</ui:composition>
+</html>

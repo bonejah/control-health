@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="../_template.xhtml">
+	<ui:define name="titulo">
+		<p:outputLabel value="#{msg['lista-consulta-titulo']}" />
+	</ui:define>
+	<ui:define name="conteudo">
+		<p:growl id="messages" showDetail="true" autoUpdate="true" />
+		<p:ajaxStatus style="display:block; margin-bottom:2em; height:100%;" />
+		<p:ajaxStatus onstart="PF('loadDialog').show()" onsuccess="PF('loadDialog').hide()"/>
+		<p:dialog 
+			widgetVar="loadDialog" 
+			modal="true"
+			draggable="false"
+			closable="false"
+			resizable="false"
+			showHeader="false">
+				<p:graphicImage 
+					library="gif"
+					name="loading2.gif"
+					title="loading" style="vertical-align: middle; width: 300px; height: 150px" />
+		</p:dialog>
+		<p:fieldset legend="#{msg['lista-consulta-titulo']}">
+			<h:form id="formNovaConsulta">
+				<p:commandButton 
+					value="#{msg['lista-consulta-botao-nova-consulta']}"
+					action="#{consultaBean.newConsulta}" 
+					icon="ui-icon-disk" 
+					style="margin-bottom: 20px;"/>
+			</h:form>
+			<h:form 
+				id="formTabelaConsulta" 
+				style="text-align:center;">
+				<p:dataTable 
+					id="tabelaConsultas" 
+					var="consulta" 
+					widgetVar="consultaTable" 
+					rows="10"
+					paginator="true" 
+					filterDelay="1000"
+					lazy="true"
+					value="#{consultaBean.model}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					emptyMessage="#{msg['lista-consulta-nenhum-registro']}">
+					<p:column 
+						headerText="#{msg['lista-consulta-id-consulta']}" 
+						sortBy="#{consulta.id}"
+						filterBy="#{consulta.id}" 
+						filterMatchMode="exact">
+						<h:outputText 
+							id="consultaId" 
+							value="#{consulta.id}" />
+					</p:column>
+					<p:column 
+						headerText="#{msg['lista-consulta-paciente-consulta']}" 
+						sortBy="#{consulta.paciente}"
+						filterBy="#{consulta.paciente}" 
+						filterMatchMode="exact">
+						<f:facet name="filter">
+			                <p:selectOneMenu 
+			                	onchange="PF('consultaTable').filter()" 
+			                	styleClass="custom-filter">
+			                    <f:selectItem 
+			                    	itemLabel="#{msg['lista-consulta-selecione-paciente']}" 
+			                    	itemValue="#{null}" 
+			                    	noSelectionOption="true" />
+			                    <f:selectItems 
+			                    	var="paciente" 
+			                    	value="#{consultaBean.listaPacientes}" 
+			                    	itemLabel="#{paciente.nome}" 
+			                    	itemValue="#{paciente.id}" />
+			                </p:selectOneMenu>
+			            </f:facet>		
+						<h:outputText value="#{consulta.paciente.nome}" />
+					</p:column>
+					<p:column 
+						headerText="#{msg['lista-consulta-medico-consulta']}" 
+						sortBy="#{consulta.medico}"
+						filterBy="#{consulta.medico}" 
+						filterMatchMode="exact">
+						<f:facet name="filter">
+			                <p:selectOneMenu 
+			                	onchange="PF('consultaTable').filter()" 
+			                	styleClass="custom-filter">
+			                    <f:selectItem 
+			                    	itemLabel="#{msg['lista-consulta-selecione-medico']}" 
+			                    	itemValue="#{null}" 
+			                    	noSelectionOption="true" />
+								<f:selectItems 
+									var="medico"
+									value="#{consultaBean.listaMedicos}" 
+									itemLabel="#{medico.nome}"
+									itemValue="#{medico.id}" />
+			                </p:selectOneMenu>
+			            </f:facet>
+						<h:outputText value="#{consulta.medico.nome}" />
+					</p:column>
+					<p:column 
+						headerText="#{msg['lista-consulta-data-consulta']}" 
+						sortBy="#{consulta.dataConsulta}"
+						filterBy="#{consulta.dataConsulta}">
+						<h:outputText value="#{consulta.dataConsulta}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column 
+						headerText="#{msg['lista-consulta-data-retorno']}" 
+						sortBy="#{consulta.dataRetorno}"
+						filterBy="#{consulta.dataRetorno}">
+						<h:outputText value="#{consulta.dataRetorno}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="#{msg['lista-consulta-acoes-consulta']}">
+						<p:commandButton 
+							icon="fa fa-fw fa-eye"
+							update=":formDlg"
+							action="#{consultaBean.viewConsulta(consulta)}"
+							oncomplete="PF('dlg').show()" 
+							title="#{msg['lista-consulta-botao-visualizar-consulta']}" />
+						<p:commandButton 
+							icon="fa fa-fw fa-edit"
+							update=":formTabelaConsulta:tabelaConsultas"
+							action="#{consultaBean.editConsulta(consulta)}"
+							process="@form" 
+							title="#{msg['lista-consulta-botao-editar-consulta']}" />
+						<p:commandButton 
+							icon="fa fa-fw fa-remove"
+							update=":formTabelaConsulta:tabelaConsultas"
+							action="#{consultaBean.deleteConsulta(consulta)}" 
+							process="@form" 
+							title="#{msg['lista-consulta-botao-excluir-consulta']}">
+							<p:confirm 
+								header="#{msg['lista-consulta-msg-id']} #{consulta.id}" 
+								message="#{msg['lista-consulta-msg-conf-exclusao-consulta']}" 
+								icon="pi pi-exclamation-triangle" />
+						</p:commandButton>	
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" closeOnEscape="true">
+					        <p:commandButton 
+					        	value="#{msg['modal-btn-excluir-consulta-sim']}" 
+					        	type="button" 
+					        	styleClass="ui-confirmdialog-yes" 
+					        	icon="pi pi-check" />	
+					        <p:commandButton 
+					        	value="#{msg['modal-btn-excluir-consulta-nao']}" 
+					        	type="button" 
+					        	styleClass="ui-confirmdialog-no" 
+					        	icon="pi pi-times" />
+					    </p:confirmDialog>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+			<h:form id="formDlg">
+				<p:dialog 
+					widgetVar="dlg"
+					modal="true" 
+					resizable="false" 
+					dynamic="true"
+					draggable="true"
+					header="#{msg['modal-consulta-titulo']} - #{consultaBean.consulta.paciente.nome}"
+					closeOnEscape="true">
+					<h:panelGroup>
+						<p:panelGrid columns="2">
+							<p:outputLabel 
+								value="#{msg['modal-consulta-paciente']}" 
+								for="paciente" />
+							<h:outputText 
+								id="paciente"
+								value="#{consultaBean.consulta.paciente.nome}" />
+							<p:outputLabel 
+								value="#{msg['modal-consulta-medico']}" 
+								for="medico" />
+							<h:outputText 
+								id="medico"
+								value="#{consultaBean.consulta.medico.nome}" />
+							<p:outputLabel 
+								value="#{msg['modal-consulta-data-consulta']}" 
+								for="dtConsulta" />
+							<h:outputText 
+								id="dtConsulta"
+								value="#{consultaBean.consulta.dataConsulta}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+							<p:outputLabel 
+								value="#{msg['modal-consulta-data-retorno']}" 
+								for="dtRetorno" />
+							<h:outputText 
+								id="dtRetorno"
+								value="#{consultaBean.consulta.dataRetorno}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:panelGrid>
+					</h:panelGroup>
+					<h:panelGroup>
+						<p:panelGrid columns="2">
+							<p:outputLabel 
+								value="#{msg['modal-consulta-peso']}" 
+								for="peso" />
+							<h:outputText 
+								id="peso"
+								value="#{consultaBean.consulta.dadosDaConsulta.peso}" />
+							<p:outputLabel 
+								value="#{msg['modal-consulta-estatura']}" 
+								for="estatura" />
+							<h:outputText 
+								id="estatura"
+								value="#{consultaBean.consulta.dadosDaConsulta.estatura}" />
+							<p:outputLabel 
+								value="#{msg['modal-consulta-percentual-craniano']}" 
+								for="cranio" />
+							<h:outputText 
+								id="cranio"
+								value="#{consultaBean.consulta.dadosDaConsulta.percentualCraniano}" />
+							<p:outputLabel 
+								value="#{msg['modal-consulta-descricao']}" 
+								for="descricao" />
+							<p:inputTextarea 
+								id="descricao" 
+								cols="100" 
+								rows="10"
+								readonly="true"
+								value="#{consultaBean.consulta.dadosDaConsulta.descricaoDaConsulta}" />
+						</p:panelGrid>
+					</h:panelGroup>
+				</p:dialog>
+			</h:form>
+		</p:fieldset>
+	</ui:define>
+	<ui:define name="rodape">
+	</ui:define>
+</ui:composition>
+</html>
