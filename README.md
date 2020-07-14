@@ -6,7 +6,7 @@
   <img src="./controlhealth.gif">
 </h1>
 
-## Project for you control your health:
+## Project for control your health
 * Java 8
 * JSF
 * Primefaces
